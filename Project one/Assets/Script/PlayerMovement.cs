@@ -4,24 +4,51 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float speed = 0.5f;
-    private float horizontalinput;
-    private float forwardInput;
+    [Header("Movement")]
+    public float moveSpeed;
+
+    public Transform orientation;
+
+    float horizontalInput;
+    float verticalInput;
+
+    Vector3 moveDirection;
+
+    Rigidbody rb;
+
+    
+    
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        
+        rb = GetComponent<Rigidbody>();
+        rb.freezeRotation = true;
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        // get player input
-        horizontalinput = Input.GetAxis("Horizontal");
-        forwardInput = Input.GetAxis("Vertical");
-
-        // Move the player forward
-        transform.Translate(Vector3.forward * Time.deltaTime * speed * forwardInput);
-        transform.Translate(Vector3.right * Time.deltaTime * speed * horizontalinput);
+        Myinput();
     }
+
+    private void FixedUpdate()
+    {
+        MovePlyaer();
+    }
+    private void Myinput()
+    {
+        horizontalInput = Input.GetAxisRaw("Horizontal");
+        verticalInput = Input.GetAxisRaw("Vertical");
+    }
+
+    private void MovePlyaer()
+    {
+        moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+
+        rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+    }
+
+
+
+
 }
